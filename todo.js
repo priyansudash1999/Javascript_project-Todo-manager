@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const todo_lists = document.getElementsByClassName('lists')[0]
 
     let tasks = JSON.parse(localStorage.getItem('tasks')) || []
+    console.log(typeof tasks)
+    tasks.forEach(task => {
+        displayTasksOnScreen(task)
+    });
     btn.addEventListener('click', () => {
     const task = todo_input.value.trim()
     if(task === ""){
@@ -20,8 +24,30 @@ document.addEventListener("DOMContentLoaded", () => {
     todo_input.value = ""
     })
 
-    function displayTasksOnScreen(tasks){
-        console.log(tasks);  
+    function displayTasksOnScreen(task){
+        console.log(task);  
+        const li = document.createElement('li')
+        li.setAttribute('data-id', task.id)
+        li.innerHTML = `<span>${task.text}</span>
+                        <button class = 'delete-btn'>Delete</button>
+                        `
+        todo_lists.appendChild(li)
+
+        li.addEventListener('click', (e)=>{
+            if(e.target.value === 'BUTTON') return
+            task.completed = !task.completed
+            li.classList.toggle("completed")
+        })
+
+        li.classList.add('todo-item')
+
+        li.querySelector('.delete-btn').addEventListener('click', (e) => {
+            e.stopPropagation()
+            tasks = tasks.filter(t => t.id !== task.id)
+            li.remove()
+            saveTasks()
+        });
+        
     }
 
     function saveTasks(){
