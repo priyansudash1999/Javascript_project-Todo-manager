@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const li = document.createElement('li')
         li.setAttribute('data_id', task.id)
         li.innerHTML = `<span>${task.date} => ${task.text}</span>
+                        <button class="edit-btn">Edit</button>
                         <button class="delete-btn">Delete</button>
                        `
         todo_lists.appendChild(li)
@@ -50,6 +51,80 @@ document.addEventListener('DOMContentLoaded', () => {
             li.remove()
             saveTasks()
         });
+
+        li.querySelector('.edit-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            todo_input.value = task.text;
+            dateInput.value = task.date;
+            btn.disabled = true;
+            const saveEditButton = document.createElement('button');
+            saveEditButton.textContent = 'Save Edit';
+            saveEditButton.classList.add('save-edit-btn');
+            li.appendChild(saveEditButton);
+        
+            saveEditButton.addEventListener('click', () => {
+                const newText = todo_input.value.trim();
+                const newDate = dateInput.value.trim();
+        
+                if (newText === '' || newDate === '') {
+                    alert('Task and date cannot be empty!');
+                    return;
+                }
+        
+                task.text = newText;
+                task.date = newDate;
+
+                li.innerHTML = `<span>${task.date} => ${task.text}</span>
+                                <button class="edit-btn">Edit</button>
+                                <button class="delete-btn">Delete</button>`;
+                li.classList.add('todo-item');
+                saveTasks();
+        
+                btn.disabled = false;
+
+                li.querySelector('.delete-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    tasks = tasks.filter(t => t.id !== task.id);
+                    li.remove();
+                    saveTasks();
+                });
+        
+                li.querySelector('.edit-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+                todo_input.value = '';
+                dateInput.value = '';
+            });
+        
+            const cancelEditButton = document.createElement('button');
+            cancelEditButton.textContent = 'Cancel';
+            cancelEditButton.classList.add('cancel-edit-btn');
+            li.appendChild(cancelEditButton);
+        
+            cancelEditButton.addEventListener('click', () => {
+                li.innerHTML = `<span>${task.date} => ${task.text}</span>
+                                <button class="edit-btn">Edit</button>
+                                <button class="delete-btn">Delete</button>`;
+                li.classList.add('todo-item');
+        
+                btn.disabled = false;
+
+                li.querySelector('.delete-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    tasks = tasks.filter(t => t.id !== task.id);
+                    li.remove();
+                    saveTasks();
+                });
+        
+                li.querySelector('.edit-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+                todo_input.value = '';
+                dateInput.value = '';
+            });
+        });
+        
+        
     }
 
 
